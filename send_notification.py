@@ -4,8 +4,12 @@ from twilio.rest import Client
 # 1. Configuration (Read from secure environment variables)
 account_sid = os.getenv('TWILIO_ACCOUNT_SID')
 auth_token = os.getenv('TWILIO_AUTH_TOKEN')
-from_number = os.getenv('TWILIO_FROM_NUMBER', 'whatsapp:+14155238886') # Default Twilio Sandbox Number
-to_number = os.getenv('TWILIO_TO_NUMBER') 
+
+def format_wa(number):
+    return f"whatsapp:{number}" if number and not number.startswith("whatsapp:") else number
+
+from_number = format_wa(os.getenv('TWILIO_FROM_NUMBER', 'whatsapp:+14155238886'))
+to_number = format_wa(os.getenv('TWILIO_TO_NUMBER'))
 
 # URL to the PDF hosted in this public GitHub repository
 pdf_repo_url = "https://raw.githubusercontent.com/Shilpanshu/Whatsapp_notification/main/dummy_report.pdf"
