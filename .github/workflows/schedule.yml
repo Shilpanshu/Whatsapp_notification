@@ -1,0 +1,32 @@
+name: Scheduled WhatsApp Notification
+
+on:
+  schedule:
+    # Runs at minute 0 past every 2nd hour.
+    - cron: '0 */2 * * *'
+  workflow_dispatch: # Allows you to run it manually from the UI for testing
+
+jobs:
+  send-notification:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+        
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+          
+      - name: Install Python Dependencies
+        run: |
+          pip install -r requirements.txt
+          
+      - name: Run Twilio Notification Script
+        env:
+          TWILIO_ACCOUNT_SID: ${{ secrets.TWILIO_ACCOUNT_SID }}
+          TWILIO_AUTH_TOKEN: ${{ secrets.TWILIO_AUTH_TOKEN }}
+          TWILIO_TO_NUMBER: ${{ secrets.TWILIO_TO_NUMBER }}
+        run: |
+          python send_notification.py
